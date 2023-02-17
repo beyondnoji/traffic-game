@@ -11,7 +11,8 @@ RED = (100, 0, 0)
 GREEN = (0, 200, 0)
 BLUE = (0, 0, 100)  
 YELLOW = (255, 255, 0)
-LIGHT_PURPLE = (60, 0, 90)
+LIGHT_PURPLE = (177, 156, 217)
+OLIVE = (128, 128, 0)
 LEVEL = 1
 PLAYER_SPEED = 5
 
@@ -232,7 +233,7 @@ play_again_button_x, play_again_button_y, = WIDTH / 2 - 100, HEIGHT /  2
 play_again_button = Button([play_again_button_x, play_again_button_y], play_again_text, BLACK, 35, unhovered_color, hovered_color) 
 
 title_font = pygame.font.SysFont('Arial', 40) 
-title = title_font.render(("Jai Walking"), True, RED)
+title = title_font.render(("Jai Walking"), True, BLACK)
 
 level_font = pygame.font.SysFont('Arial', 25)
 level_render = level_font.render((f"Level {LEVEL}"), True, RED)
