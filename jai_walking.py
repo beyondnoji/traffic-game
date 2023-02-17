@@ -4,7 +4,7 @@ pygame.init()
 SURFACE_COLOR = (50, 50, 50)
 # (167, 255, 100)
 COLOR = (255, 100, 98)
-WIDTH, HEIGHT = 800, 600 
+WIDTH, HEIGHT = 1280, 720 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (100, 0, 0)
@@ -18,10 +18,17 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Traffic Game") 
 buttons = pygame.sprite.Group() 
 all_sprites_list = pygame.sprite.Group()
-car_img = pygame.image.load('car.png') 
-player_img = pygame.image.load('player2.png') 
-finish_line_img = pygame.image.load('finish_line.png')
+car_left_img = pygame.image.load('car_facing_left.png') 
+car_right_img = pygame.image.load('car_facing_right.png') 
 
+car_right_img  = pygame.transform.scale(car_right_img, (WIDTH * (64/ WIDTH), HEIGHT * (64 / HEIGHT)))
+car_left_img = pygame.transform.scale(car_left_img, (WIDTH * (64 / WIDTH), HEIGHT * (64 / HEIGHT)))
+
+player_img = pygame.image.load('player2.png') 
+player_img  = pygame.transform.scale(player_img, (WIDTH * (64 / WIDTH), HEIGHT * (64 / HEIGHT)))
+
+finish_line_img = pygame.image.load('finish_line.png')
+finish_line_img  = pygame.transform.scale(finish_line_img, (WIDTH, HEIGHT))
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, position, text, text_color, size, bg_unhovered, bg_hovered):
@@ -57,9 +64,9 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             all_sprites_list.add(self)
 
-    def handle_keys(self, speed):
+    def handle_keys(self, speed = 5):
         key = pygame.key.get_pressed() 
-        dist = 1 * speed # distan
+        dist = (WIDTH / 1000) * speed # distan
         if key[pygame.K_DOWN]: 
             self.rect.y += dist 
         elif key[pygame.K_UP]: 
@@ -94,22 +101,30 @@ class Player(pygame.sprite.Sprite):
             return True
     
     def just_won(self):
-        return self.rect.bottom >= 500 
+        return self.rect.bottom >= HEIGHT - (HEIGHT * 1/6)
 
 class Car(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = car_img.convert_alpha() 
+        self.image = car_left_img.convert_alpha() 
         self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect()
         self.travelled = 0
         all_sprites_list.add(self)
 
+    def face_right(self):
+        self.image = car_right_img.convert_alpha()
+
+    def face_left(self):
+        self.image = car_left_img.convert_alpha()
+
     def move_car(self, speed):
-        dist = 1
+        dist = (WIDTH / 1000)
         if self.travelled % 2 == 0: # DEFUALT TO 0 
+            self.face_right()
             self.rect.x += dist * speed 
         else:
+            self.face_left()
             self.rect.x -= dist * speed
         if self.keep_in_screen(WIDTH, HEIGHT): 
             self.travelled += 1
@@ -139,9 +154,9 @@ class FinishLine(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         self.rect.x = 0
-        self.rect.y = HEIGHT - 200
+        self.rect.y = HEIGHT - (HEIGHT / 3)
         self.rect.width = WIDTH
-        self.rect.height = HEIGHT - 100 
+        self.rect.height = HEIGHT - (HEIGHT * 1/6)
         print(self.rect)
         all_sprites_list.add(self)
 
@@ -152,7 +167,7 @@ def set_start_pos():
             sprites_array[i].rect.y = 0
         else:
             sprites_array[i].rect.x = 0
-            sprites_array[i].rect.y = 150 * i
+            sprites_array[i].rect.y = (HEIGHT * 0.25) * i
 
 def update_game_screen(): 
     for i in range(1, 5): 
@@ -160,7 +175,7 @@ def update_game_screen():
     all_sprites_list.update() 
     window.fill(SURFACE_COLOR) 
     window.blit(level_render, (0, 0)) 
-    window.blit(finish_line.image, (0, 500))
+    window.blit(finish_line.image, (0, HEIGHT - (HEIGHT * 1/6)))
     all_sprites_list.draw(window) 
     clock.tick(60)  
     pygame.display.flip() 
@@ -173,6 +188,7 @@ def draw_start_menu():
     pygame.display.flip()
 
 def draw_post_game(winning):
+    window.fill(SURFACE_COLOR) 
     if winning:
         win_or_lose_message = title_font.render("WINNER!", True, GREEN) 
         play_again_button.text_render = play_again_button.font.render(f"Play Level {LEVEL}", True, GREEN)
@@ -180,9 +196,9 @@ def draw_post_game(winning):
     else:
         play_again_button.text_render = play_again_button.font.render("Play Again", True, YELLOW)
         win_or_lose_message = title_font.render("LOSER!", True, RED) 
+        window.blit(reached_level, (WIDTH / 2 - reached_level.get_width() / 2, HEIGHT / 2 + HEIGHT * (0.1)))
 
     mouse = pygame.mouse.get_pos()
-    window.fill(SURFACE_COLOR) 
     quit_button.update(mouse) 
     play_again_button.update(mouse)
     window.blit(win_or_lose_message, (WIDTH / 2 - win_or_lose_message.get_width() / 2, 0))
@@ -206,13 +222,14 @@ play_again_button_x, play_again_button_y, = WIDTH / 2 - 100, HEIGHT /  2
 play_again_button = Button([play_again_button_x, play_again_button_y], play_again_text, BLACK, 35, unhovered_color, hovered_color) 
 
 title_font = pygame.font.SysFont('Arial', 40) 
-title = title_font.render(("Zombie Crossy Road"), True, RED)
+title = title_font.render(("Jai Walking"), True, RED)
 
 level_font = pygame.font.SysFont('Arial', 25)
 level_render = level_font.render((f"Level {LEVEL}"), True, RED)
 
 start_button_x, start_button_y = WIDTH / 2, HEIGHT / 2
 start_button = Button([start_button_x, start_button_y], "Start", WHITE, 35, unhovered_color, GREEN) 
+
 
 player = Player() 
 for i in range(1, 4):
@@ -243,13 +260,14 @@ if __name__ == "__main__":
                 elif event.type == pygame.KEYDOWN:
                     if event.type == pygame.K_x:
                         running = False
-            player.handle_keys(5)
+            player.handle_keys()
             move_all_cars()
 
             if player.is_colliding(collide_list):
                 print("Collision!") 
                 set_start_pos()
                 winning = False
+                reached_level = level_font.render((f"You almost beat Level {LEVEL}!"), True, WHITE) # must initailize this render before updating level for next game 
                 LEVEL = 1
                 level_render = level_font.render((f"Level {LEVEL}"), True, RED)
                 GAME_STATE = "post_game"
