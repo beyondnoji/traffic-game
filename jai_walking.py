@@ -4,7 +4,7 @@ pygame.init()
 SURFACE_COLOR = (50, 50, 50)
 # (167, 255, 100)
 COLOR = (255, 100, 98)
-WIDTH, HEIGHT = 1280, 720 
+WIDTH, HEIGHT = 1920, 1080 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (100, 0, 0)
@@ -13,11 +13,14 @@ BLUE = (0, 0, 100)
 YELLOW = (255, 255, 0)
 LIGHT_PURPLE = (60, 0, 90)
 LEVEL = 1
+PLAYER_SPEED = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Traffic Game") 
 buttons = pygame.sprite.Group() 
 all_sprites_list = pygame.sprite.Group()
+all_cars = pygame.sprite.Group()
+
 car_left_img = pygame.image.load('car_facing_left.png') 
 car_right_img = pygame.image.load('car_facing_right.png') 
 
@@ -29,6 +32,9 @@ player_img  = pygame.transform.scale(player_img, (WIDTH * (64 / WIDTH), HEIGHT *
 
 finish_line_img = pygame.image.load('finish_line.png')
 finish_line_img  = pygame.transform.scale(finish_line_img, (WIDTH, HEIGHT))
+
+road_img = pygame.image.load('road.png') 
+road_img  = pygame.transform.scale(road_img, (WIDTH, HEIGHT * (128 / HEIGHT)))
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, position, text, text_color, size, bg_unhovered, bg_hovered):
@@ -64,7 +70,7 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             all_sprites_list.add(self)
 
-    def handle_keys(self, speed = 5):
+    def handle_keys(self, speed = PLAYER_SPEED):
         key = pygame.key.get_pressed() 
         dist = (WIDTH / 1000) * speed # distan
         if key[pygame.K_DOWN]: 
@@ -111,6 +117,7 @@ class Car(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.travelled = 0
         all_sprites_list.add(self)
+        all_cars.add(self)
 
     def face_right(self):
         self.image = car_right_img.convert_alpha()
@@ -154,28 +161,31 @@ class FinishLine(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         self.rect.x = 0
-        self.rect.y = HEIGHT - (HEIGHT / 3)
+        self.rect.y = HEIGHT - (HEIGHT / 7)
         self.rect.width = WIDTH
         self.rect.height = HEIGHT - (HEIGHT * 1/6)
         print(self.rect)
         all_sprites_list.add(self)
 
 def set_start_pos():
-    for i in range(len(sprites_array)): 
-        if i == 0:
-            sprites_array[i].rect.x = WIDTH / 2
-            sprites_array[i].rect.y = 0
-        else:
-            sprites_array[i].rect.x = 0
-            sprites_array[i].rect.y = (HEIGHT * 0.25) * i
+    player.rect.x = WIDTH / 2
+    player.rect.y = 0
+    for i in range(len(cars_array)):
+            cars_array[i].rect.x = 0
+            cars_array[i].rect.y = (HEIGHT / 6) + (HEIGHT * 0.25) * i+1
+
+def draw_roads():
+    for i in range(0, 3): 
+        window.blit(road_img, (0, cars_array[i].rect.y))
 
 def update_game_screen(): 
     for i in range(1, 5): 
         collide_list.append(sprites_array[i].rect)
     all_sprites_list.update() 
     window.fill(SURFACE_COLOR) 
+    draw_roads()
     window.blit(level_render, (0, 0)) 
-    window.blit(finish_line.image, (0, HEIGHT - (HEIGHT * 1/6)))
+    window.blit(finish_line.image, (0, finish_line.rect.y))
     all_sprites_list.draw(window) 
     clock.tick(60)  
     pygame.display.flip() 
@@ -206,7 +216,7 @@ def draw_post_game(winning):
 
 def move_all_cars():
     for i in range(1, 4): # iterate thru the cars to move them 
-        sprites_array[i].move_car(5 + (i*LEVEL)) 
+        sprites_array[i].move_car(5 + (i * LEVEL)) # speed = 5 + (which_car * level)
 
 
 ''' DECLARE ALL VARIABLES AND OBJECTS '''
@@ -230,7 +240,6 @@ level_render = level_font.render((f"Level {LEVEL}"), True, RED)
 start_button_x, start_button_y = WIDTH / 2, HEIGHT / 2
 start_button = Button([start_button_x, start_button_y], "Start", WHITE, 35, unhovered_color, GREEN) 
 
-
 player = Player() 
 for i in range(1, 4):
     car = Car() 
@@ -239,6 +248,8 @@ finish_line = FinishLine()
 
 buttons_array = list(buttons)
 sprites_array = list(all_sprites_list)
+cars_array = list(all_cars)
+
 
 if __name__ == "__main__":
     '''
