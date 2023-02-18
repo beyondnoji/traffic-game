@@ -1,7 +1,7 @@
 import pygame
 pygame.init() 
 
-SURFACE_COLOR = (50, 50, 50)
+SURFACE_COLOR = (60, 60, 60)
 # (167, 255, 100)
 COLOR = (255, 100, 98)
 WIDTH, HEIGHT = 1920, 1080 
@@ -32,7 +32,7 @@ player_img = pygame.image.load('player2.png')
 player_img  = pygame.transform.scale(player_img, (WIDTH * (64 / WIDTH), HEIGHT * (64 / HEIGHT)))
 
 finish_line_img = pygame.image.load('finish_line.png')
-finish_line_img  = pygame.transform.scale(finish_line_img, (WIDTH, HEIGHT))
+finish_line_img  = pygame.transform.scale(finish_line_img, (WIDTH, HEIGHT / 2))
 
 road_img = pygame.image.load('road.png') 
 road_img  = pygame.transform.scale(road_img, (WIDTH, HEIGHT * (128 / HEIGHT)))
@@ -188,7 +188,7 @@ def update_game_screen():
     window.blit(level_render, (0, 0)) 
     window.blit(finish_line.image, (0, finish_line.rect.y))
     all_sprites_list.draw(window) 
-    clock.tick(60)  
+    clock.tick(144)  
     pygame.display.flip() 
 
 def draw_start_menu():
