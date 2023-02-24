@@ -187,8 +187,7 @@ def update_game_screen():
     draw_roads()
     window.blit(level_render, (0, 0)) 
     window.blit(finish_line.image, (0, finish_line.rect.y))
-    all_sprites_list.draw(window) 
-    clock.tick(144)  
+    all_sprites_list.draw(window)   
     pygame.display.flip() 
 
 def draw_start_menu():
@@ -321,6 +320,6 @@ if __name__ == "__main__":
                     if event.type == pygame.K_x:
                         running = False
             draw_post_game(winning)
-
+        clock.tick(144)
 pygame.display.quit()
     
