@@ -22,6 +22,9 @@ buttons = pygame.sprite.Group()
 all_sprites_list = pygame.sprite.Group()
 all_cars = pygame.sprite.Group()
 
+pygame.mixer.music.load('song.mp3')
+pygame.mixer.music.play(-1)
+
 car_left_img = pygame.image.load('car_facing_left.png') 
 car_right_img = pygame.image.load('car_facing_right.png') 
 
