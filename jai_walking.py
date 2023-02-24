@@ -323,5 +323,6 @@ if __name__ == "__main__":
                     if event.type == pygame.K_x:
                         running = False
             draw_post_game(winning)
-        clock.tick(144)  
-pygame.display.quit()
+        clock.tick(144)
+    pygame.display.quit()
+    
