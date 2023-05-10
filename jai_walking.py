@@ -22,6 +22,7 @@ buttons = pygame.sprite.Group()
 all_sprites_list = pygame.sprite.Group()
 all_cars = pygame.sprite.Group()
 
+
 pygame.mixer.music.load('song.mp3')
 pygame.mixer.music.play(-1)
 
@@ -293,7 +294,7 @@ if __name__ == "__main__":
                 level_render = level_font.render((f"Level {LEVEL}"), True, RED)
                 GAME_STATE = "post_game" 
             update_game_screen()
-
+            
             ''' START MENU BRANCH '''
         elif GAME_STATE == "start_menu": 
             for event in pygame.event.get():
@@ -323,6 +324,7 @@ if __name__ == "__main__":
                     if event.type == pygame.K_x:
                         running = False
             draw_post_game(winning)
-        clock.tick(144)
+        clock.tick(60)
+
     pygame.display.quit()
     
