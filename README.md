@@ -1,4 +1,4 @@
-# This is a traffic game which I coded using the pygame library. I made the pixel-art from scratch using a site called piskel. 
+# This is a traffic game which I coded using the pygame library. I made the pixel-art myself from scratch.
 # From making this game, I gained and learned the following:
 1. I learned how to use external libraries for the first time, and especially how to understand and quickly extract needed information from the documentation.
 2. As regards the actual coding of games (in which I have a interest), I learnt about the structure and relation of the main while-loop in which the game takes place. I learnt about the mechanics of event-handling, reading inputs from the user, as well as the drawing of the screen, all of which in tandem constitute the game.  
